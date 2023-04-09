@@ -1,0 +1,36 @@
+@import 'variables';
+
+$wall-background-color:#744d47;
+$selected-tile-border-color: green;
+
+.tile {
+  width: 40px;
+  height: 40px;
+  border: $border-width solid $mirage-background-color;
+ 
+  &.wall {
+    background-color: $wall-background-color;
+  }
+
+  &.ground {
+    background-color: #fbe1c4;
+  }
+
+  &.ladder {
+    background-color: #fbe1c4;
+    // background-image: url('/assets/icons/ladder.svg');
+  }
+
+  &.box {
+    background-color: #bd9360;
+  }
+
+  &:hover {
+    border: $border-width solid $selected-tile-border-color;
+    cursor: pointer;
+  }
+}
+
+.tile-selected {
+  border: $border-width solid $selected-tile-border-color;
+}

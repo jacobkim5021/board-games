@@ -17,3 +17,9 @@ cd board-games
 npm start
 ```
 ##### App will be hosted on http://localhost:4200/.
+
+## Deploy from local to github pages
+##### Running this command will build the app in production mode and make a commit to the gh-pages branch, where github pages is set to be built from.
+```sh
+npm run build-and-deploy
+```

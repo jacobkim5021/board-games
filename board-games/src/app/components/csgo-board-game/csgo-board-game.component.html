@@ -1,0 +1,72 @@
+<div class="app-container">
+  <div class="column">
+    <div class="row">
+  
+    </div>
+    
+  </div>
+  <div class="column">
+    <div class="row">
+      <!-- <h2 [ngStyle]="{'position': 'absolute', 'bottom': 0}">5 / 5 Points</h2> -->
+    </div>
+    <div class="row game-board">
+      <div class="tile-container">
+        <div 
+          *ngFor="let rowIndex of [].constructor(yLength); let y = index"
+          class="tile-row"
+        >
+          <app-tile
+            *ngFor="let colIndex of [].constructor(xLength); let x = index"
+            [coordinates]="{ x, y }"
+            (click)="onTileClick($event, x, y)"
+            (mousedown)="onTileClick($event, x, y)"
+          ></app-tile>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- <h2 [ngStyle]="{'text-align': 'right'}">5 / 5 Points</h2> -->
+    </div>
+  </div>
+  <div class="column">
+    <div class="row map-editor-toggle-row">
+      <div class="map-editor-toggle">
+        <div style="margin-right: 10px">
+          Show Map Editor Tools
+        </div>
+        <mat-slide-toggle
+          (change)="onMapEditorToggle($event)"
+          [checked]="showMapEditor"
+        ></mat-slide-toggle>
+      </div>
+    </div>
+    <div class="row palette">
+      <div *ngIf="showMapEditor" class="tile-palette">
+        <div 
+          *ngFor="let tileType of tileTypes; let z = index"
+          class="palette-tile-row"
+        >
+          <app-tile
+            [tileType]="tileType"
+            [selected]="selectedPaletteTileType === tileType"
+            (click)="onPaletteTileClick($event, tileType)"
+          ></app-tile>
+          <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">{{ tileType | titlecase }}</p>
+        </div>
+      </div>
+      <div class="map-functions">
+        <div class="export-map-button" (click)="onExportClick()">
+          Export Map
+        </div>
+        <input type="file" [ngStyle]="{ display: 'none' }" (change)="onImportClick($event)" #importFileUpload>
+        <div class="import-map-button" (click)="importFileUpload.click()">
+          Import Map
+        </div>
+        <div class="reset-map-button" (click)="onResetClick()">
+          Reset Map
+        </div>
+      </div>
+    </div>
+    <div class="row"></div>
+  </div>
+</div>

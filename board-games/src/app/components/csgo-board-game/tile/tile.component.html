@@ -1,0 +1,14 @@
+<div
+  *ngIf="type"
+  class="tile"
+  [ngClass]="[type]"
+  [class.tile-selected]="selected"
+  [ngStyle]="{ width: tileSize.x, height: tileSize.y}"
+>
+  <svg-icon
+    *ngIf="type === 'ladder'"
+    src="assets/icons/ladder.svg"
+    [svgStyle]="{ width: tileSize.x, height: tileSize.y }"
+  >
+  </svg-icon>
+</div>

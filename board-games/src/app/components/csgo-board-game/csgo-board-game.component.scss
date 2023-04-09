@@ -1,0 +1,86 @@
+@import 'variables';
+
+:host {
+  height: 100%;
+  width: 100%;
+  color: white;
+
+  .app-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+  }
+
+  .column {
+    flex: 33.33%;
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row {
+    flex: 10%;
+    position: relative;
+
+    &.game-board {
+      display: flex;
+      justify-content: center;
+    }
+
+    &.palette {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    &.map-editor-toggle-row {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+}
+
+.tile-container {
+  display: inline-block;
+  border: 2px solid $mirage-background-color;
+
+  .tile-row {
+    display: flex;
+  }
+}
+
+.tile-palette {
+  .palette-tile-row {
+    display: flex;
+  }
+}
+
+.map-functions {
+  display: flex;
+}
+
+.export-map-button, .import-map-button, .reset-map-button {
+  color: black;
+  background-color: white;
+  width: 100%;
+  height: 40px;
+  margin: 5px 5px 5px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lightblue;
+  }
+}
+
+.map-editor-toggle {
+  display: flex;
+  padding-right: 10px;
+  margin-top: auto;
+  margin-bottom: 5px;
+  justify-content: space-between;
+}
