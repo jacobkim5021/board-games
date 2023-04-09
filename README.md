@@ -12,6 +12,10 @@ git clone https://github.com/jacobkim5021/board-games.git
 ```sh
 cd board-games
 ```
+##### Install necessary node modules with
+```sh
+npm install
+```
 ##### Start the angular app with:
 ```sh
 npm start
