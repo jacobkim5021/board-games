@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription, take } from 'rxjs';
 import { setCsgoBoardGameMap, setSelectedPaletteTileType, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
@@ -48,18 +48,32 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   }
 
   onTileClick(_event: any, x: number, y: number): void {
-    console.log(`[${x},${y}]`);
     if (this.selectedPaletteTileType) {
       this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
     } else {
-      
+      console.log('tile ' + x + '-' + y +' clicked without palette tile set')
     }
+  }
+
+  onTileMouseover(event: any, x: number, y: number): void {
+    if (this.selectedPaletteTileType && event.buttons === 1) {
+      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
+    } else if (event.buttons === 2) {
+      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: TileTypes.Ground }));
+    }
+  }
+
+  onTileMouseup(_event: any): void {
+    this.clearSelection();
   }
 
   onMapEditorToggle(event: any): void {
     this.showMapEditor = event.checked;
+    if (this.selectedPaletteTileType) {
+      this.store.dispatch(setSelectedPaletteTileType({ tileType: this.selectedPaletteTileType }));
+    }
   }
-  
+
   onPaletteTileClick(_event: any, tileType: TileTypes): void {
     this.store.dispatch(setSelectedPaletteTileType({ tileType }));
   }
@@ -89,5 +103,19 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
 
   onResetClick(): void {
     this.store.dispatch(setCsgoBoardGameMap({ tiles: initialState.tiles, boardSize: initialState.boardSize }));
+  }
+
+  clearSelection(): void {
+    if(window.getSelection) {
+      var sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+      }
+    }
+  }
+
+  @HostListener('contextmenu', ['$event'])
+  onRightClick(event: any) {
+    event.preventDefault();
   }
 }

@@ -19,7 +19,9 @@
             *ngFor="let colIndex of [].constructor(xLength); let x = index"
             [coordinates]="{ x, y }"
             (click)="onTileClick($event, x, y)"
-            (mousedown)="onTileClick($event, x, y)"
+            (mousedown)="onTileMouseover($event, x, y)"
+            (mouseover)="onTileMouseover($event, x, y)"
+            (mouseup)="onTileMouseup($event)"
           ></app-tile>
         </div>
       </div>
@@ -54,7 +56,7 @@
           <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">{{ tileType | titlecase }}</p>
         </div>
       </div>
-      <div class="map-functions">
+      <div *ngIf="showMapEditor" class="map-functions">
         <div class="export-map-button" (click)="onExportClick()">
           Export Map
         </div>
