@@ -13,7 +13,7 @@ export class TileComponent implements OnInit{
   @Input() coordinates: { x: number, y: number};
   @Input() tileType: TileTypes;
   @Input() selected: boolean;
-  tileSize: { x: string, y: string } = { x: '30px', y: '30px' };
+  @Input() tileSize: { x: string, y: string } = { x: '30px', y: '30px' };
   type: TileTypes;
   style: TileStyles;
 

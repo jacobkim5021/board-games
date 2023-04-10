@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription, take } from 'rxjs';
-import { setCsgoBoardGameMap, setSelectedPaletteTileType, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
-import { TileTypes, initialState } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
+import { setCsgoBoardGameMap, setCsgoBoardSize, setSelectedPaletteTileType, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
+import { INITIAL_TILE_SIZE, TileTypes, initialState } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
 import { getBoardSize, getSelectedPaletteTileType, selectCsgoBoardGameState } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
 import exportFromJSON from 'export-from-json';
 
@@ -14,15 +14,16 @@ import exportFromJSON from 'export-from-json';
 export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   @ViewChild('importFileUpload') importFileUploadInput: ElementRef;
   showMapEditor: boolean = true;
-  xLength: number;
-  yLength: number;
   tileTypes: TileTypes[] = Object.values(TileTypes);
   selectedPaletteTileType: TileTypes | null;
-
+  xDimension: number;
+  yDimension: number;
+  tileSize: number = INITIAL_TILE_SIZE;       // in pixels
   subs: Subscription[] = [];
 
   constructor(
     private store: Store<any>,
+    private cdRef: ChangeDetectorRef,
   ) {
 
   }
@@ -30,21 +31,37 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(this.tileTypes);
     this.subs.push(
-      this.store.select(getBoardSize).subscribe((boardSize) => {
-        this.xLength = boardSize.x;
-        this.yLength = boardSize.y;
+      this.store.select(getSelectedPaletteTileType).subscribe((tileType: TileTypes|null) => {
+        this.selectedPaletteTileType = tileType;
       })
     );
 
     this.subs.push(
-      this.store.select(getSelectedPaletteTileType).subscribe((tileType: TileTypes|null) => {
-        this.selectedPaletteTileType = tileType;
+      this.store.select(getBoardSize).subscribe((boardSize) => {
+        console.log(boardSize);
+        this.xDimension = boardSize.x;
+        this.yDimension = boardSize.y;
+        this.cdRef.detectChanges();
       })
     );
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe());
+  }
+
+  onDimensionChange(event: any, dimension: string): void {
+    if (event > 0) {
+      const newBoardSize = {
+        x: dimension === 'x' ? event : this.xDimension,
+        y: dimension === 'y' ? event : this.yDimension
+      };
+      this.store.dispatch(setCsgoBoardSize({ boardSize: newBoardSize }))
+    }
+  }
+
+  onTileSizeChange(event: any): void {
+    this.tileSize = event;
   }
 
   onTileClick(_event: any, x: number, y: number): void {
@@ -67,15 +84,15 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
     this.clearSelection();
   }
 
+  onPaletteTileClick(_event: any, tileType: TileTypes): void {
+    this.store.dispatch(setSelectedPaletteTileType({ tileType }));
+  }
+
   onMapEditorToggle(event: any): void {
     this.showMapEditor = event.checked;
     if (this.selectedPaletteTileType) {
       this.store.dispatch(setSelectedPaletteTileType({ tileType: this.selectedPaletteTileType }));
     }
-  }
-
-  onPaletteTileClick(_event: any, tileType: TileTypes): void {
-    this.store.dispatch(setSelectedPaletteTileType({ tileType }));
   }
 
   onExportClick(): void {

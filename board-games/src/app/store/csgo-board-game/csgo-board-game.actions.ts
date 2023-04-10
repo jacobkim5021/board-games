@@ -20,6 +20,11 @@ export const setCsgoBoardGameMap = createAction(
   props<{ tiles: { [id: string]: TileInfo }, boardSize: { x: number, y: number } }>()
 );
 
+export const setCsgoBoardSize = createAction(
+  '[CsgoBoardGame] Set Csgo Board Game Map Size',
+  props<{ boardSize: { x: number, y: number } }>()
+);
+
 export const setSelectedPaletteTileType = createAction(
   '[CsgoBoardGame] Set Selected Palette Tile Type',
   props<{ tileType: TileTypes }>()

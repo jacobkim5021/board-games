@@ -60,6 +60,16 @@
   display: flex;
 }
 
+.dimension-settings {
+  display: flex;
+
+  .dimension-input {
+    width: 40px;
+    margin-right: 15px;
+    margin-left: 5px;
+  }
+}
+
 .export-map-button, .import-map-button, .reset-map-button {
   color: black;
   background-color: white;

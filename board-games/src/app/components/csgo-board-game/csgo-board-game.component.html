@@ -12,12 +12,13 @@
     <div class="row game-board">
       <div class="tile-container">
         <div 
-          *ngFor="let rowIndex of [].constructor(yLength); let y = index"
+          *ngFor="let rowIndex of [].constructor(yDimension); let y = index"
           class="tile-row"
         >
           <app-tile
-            *ngFor="let colIndex of [].constructor(xLength); let x = index"
+            *ngFor="let colIndex of [].constructor(xDimension); let x = index"
             [coordinates]="{ x, y }"
+            [tileSize]="{ x: tileSize + 'px', y: tileSize + 'px'}"
             (click)="onTileClick($event, x, y)"
             (mousedown)="onTileMouseover($event, x, y)"
             (mouseover)="onTileMouseover($event, x, y)"
@@ -55,6 +56,18 @@
           ></app-tile>
           <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">{{ tileType | titlecase }}</p>
         </div>
+      </div>
+      <div *ngIf="showMapEditor" class="">
+        <div class="dimension-settings">
+          <div>x: </div>
+          <input type="number" class="dimension-input" [ngModel]="xDimension" (ngModelChange)="onDimensionChange($event, 'x')">
+          <div>y: </div>
+          <input type="number" class="dimension-input" [ngModel]="yDimension" (ngModelChange)="onDimensionChange($event, 'y')">
+          <div>tile size: </div>
+          <input type="number" class="dimension-input" [ngModel]="tileSize" (ngModelChange)="onTileSizeChange($event)">
+          <div>px</div>
+        </div>
+        <p style="color: red; margin: 5px">* Changing dimensions may result in data loss</p>
       </div>
       <div *ngIf="showMapEditor" class="map-functions">
         <div class="export-map-button" (click)="onExportClick()">

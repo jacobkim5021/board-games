@@ -2,7 +2,8 @@ import { createFeature, createReducer, on } from '@ngrx/store';
 import * as CsgoBoardGameActions from './csgo-board-game.actions';
 
 export const csgoBoardGameFeatureKey = 'csgoBoardGame';
-export const INITIAL_BOARD_SIZE = { x: 15, y: 15 };
+export const INITIAL_BOARD_SIZE = { x: 25, y: 25 };
+export const INITIAL_TILE_SIZE = 25;
 
 export interface State {
   boardSize: {
@@ -67,7 +68,21 @@ export const reducer = createReducer(
     return {
       ...state,
       boardSize: action.boardSize,
-      tiles: action.tiles
+      tiles: action.tiles 
+    };
+  }),
+
+  on(CsgoBoardGameActions.setCsgoBoardSize, (state, action) => {
+    const freshTiles = getInitialTiles(action.boardSize.x, action.boardSize.y);
+    Object.keys(freshTiles).forEach(key => {
+      if(state.tiles[key]) {
+        freshTiles[key] = state.tiles[key];
+      }
+    });
+    return {
+      ...state,
+      boardSize: action.boardSize,
+      tiles: freshTiles,
     };
   }),
 
