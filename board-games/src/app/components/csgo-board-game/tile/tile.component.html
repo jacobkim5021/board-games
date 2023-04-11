@@ -3,12 +3,26 @@
   class="tile"
   [ngClass]="[type]"
   [class.tile-selected]="selected"
-  [ngStyle]="{ width: tileSize.x, height: tileSize.y}"
+  [ngStyle]="{
+    width: tileSize + 'px',
+    height: tileSize + 'px',
+    position: 'relative'
+  }"
 >
+  <!-- <p *ngIf="coordinates">{{coordinates.x }}{{ coordinates.y}}</p> -->
   <svg-icon
     *ngIf="type === 'ladder'"
     src="assets/icons/ladder.svg"
-    [svgStyle]="{ width: tileSize.x, height: tileSize.y }"
+    [svgStyle]="{ width: tileSize + 'px', height: tileSize + 'px' }"
   >
   </svg-icon>
+  <app-board-piece
+    *ngIf="boardPieceType"
+    [type]="boardPieceType"
+    [ngStyle]="{
+      'position': 'absolute',
+      'top': '-2px',
+      'left': '-2px'
+    }"
+  ></app-board-piece>
 </div>

@@ -1,16 +1,30 @@
-<!-- <div class="tile-container">
-  <div
-    *ngFor="let rowIndex of [].constructor(yDimension); let y = index"
-    class="tile-row"
-  >
-    <app-tile
-      *ngFor="let colIndex of [].constructor(xDimension); let x = index"
-      [coordinates]="{ x, y }"
-      [tileSize]="{ x: tileSize + 'px', y: tileSize + 'px'}"
-      (click)="onTileClick($event, x, y)"
-      (mousedown)="onTileMouseover($event, x, y)"
-      (mouseover)="onTileMouseover($event, x, y)"
-      (mouseup)="onTileMouseup($event)"
-    ></app-tile>
-  </div>
-</div> -->
+<div class="board" [ngStyle]="boardStyle" #board>
+  <ng-container *ngFor="let rowIndex of yArray; let y = index">
+    <ng-container *ngFor="let colIndex of xArray; let x = index">
+      <div class="tile-wrapper">
+        <app-tile
+          [coordinates]="{ x, y }"
+          (click)="onTileClick($event, x, y)"
+          (mousedown)="onTileMouseover($event, x, y)"
+          (mouseover)="onTileMouseover($event, x, y)"
+          (mouseup)="onTileMouseup($event)"
+        >
+        </app-tile>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <app-board-piece
+    *ngFor="let boardPiece of boardPieceList;"
+    (click)="onBoardPieceClick($event, boardPiece)"
+    (mouseover)="onBoardPieceMouseover($event, boardPiece)"
+    (mousedown)="onBoardPieceMouseover($event, boardPiece)"
+    (mouseup)="onTileMouseup($event)"
+    [type]="boardPiece.type"
+    [ngStyle]="{
+      'position': 'absolute',
+      'top': boardPiece.yOffset + 'px',
+      'left': boardPiece.xOffset + 'px'
+    }"
+  ></app-board-piece>
+</div>

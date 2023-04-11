@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { TileStyles, TileTypes } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
-import { getTileDataById } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
+import { Subscription } from 'rxjs';
+import { BoardPieceTypes, TileStyles, TileTypes } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
+import { getTileDataById, getTileSize } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
 import { State } from 'src/app/store/reducers';
 
 @Component({
@@ -9,13 +10,16 @@ import { State } from 'src/app/store/reducers';
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss']
 })
-export class TileComponent implements OnInit{
+export class TileComponent implements OnInit, OnDestroy {
   @Input() coordinates: { x: number, y: number};
-  @Input() tileType: TileTypes;
+  @Input() tileType: TileTypes = TileTypes.Ground;
   @Input() selected: boolean;
-  @Input() tileSize: { x: string, y: string } = { x: '30px', y: '30px' };
+  @Input() boardPieceType: BoardPieceTypes;
+  tileSize: number;
   type: TileTypes;
   style: TileStyles;
+
+  subs: Subscription[] = [];
 
   constructor(
     private store: Store<State>,
@@ -23,6 +27,11 @@ export class TileComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.subs.push(
+      this.store.select(getTileSize).subscribe((tileSize: number) => {
+        this.tileSize = tileSize;
+      })
+    );
     if (this.coordinates) {
       // on game board
       this.store.select(getTileDataById(this.coordinates.x + '-' + this.coordinates.y)).subscribe((tileData) => {
@@ -32,8 +41,16 @@ export class TileComponent implements OnInit{
         }
       });
     } else {
-      // palette
       this.type = this.tileType;
+      if (this.boardPieceType) {
+        // board piece palette
+      } else {
+        // tile palette
+      }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 }

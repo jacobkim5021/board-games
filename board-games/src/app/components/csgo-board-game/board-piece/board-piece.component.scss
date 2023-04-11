@@ -1,0 +1,10 @@
+@import 'variables';
+
+.board-piece-wrapper {
+  border: $border-width solid transparent;
+  &:hover {
+    border: $border-width solid $selected-board-piece-border-color;
+    cursor: pointer;
+  }
+}
+

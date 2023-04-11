@@ -1,16 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription, take } from 'rxjs';
-import { setCsgoBoardGameMap, setCsgoBoardSize, setSelectedPaletteTileType, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
-import { INITIAL_TILE_SIZE, TileTypes, initialState } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
-import { getBoardSize, getSelectedPaletteTileType, selectCsgoBoardGameState } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
+import { setCsgoBoardGameMap, setCsgoBoardSize, setSelectedPaletteBoardPieceType, setSelectedPaletteTileType, setTileSize, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
+import { BoardPieceTypes, INITIAL_TILE_SIZE, TileTypes, initialState } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
+import { getBoardSize, getSelectedPaletteBoardPieceType, getSelectedPaletteTileType, getTileSize, selectCsgoBoardGameState } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
 import exportFromJSON from 'export-from-json';
-import {
-  CdkDrag,
-  CdkDragStart,
-  CdkDropList, CdkDropListGroup, CdkDragMove, CdkDragEnter,
-  moveItemInArray
-} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-csgo-board-game',
@@ -19,13 +13,14 @@ import {
 })
 export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   @ViewChild('importFileUpload') importFileUploadInput: ElementRef;
-  @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
   showMapEditor: boolean = true;
   tileTypes: TileTypes[] = Object.values(TileTypes);
+  boardPieceTypes: BoardPieceTypes[] = Object.values(BoardPieceTypes);
   selectedPaletteTileType: TileTypes | null;
+  selectedPaletteBoardPieceType: BoardPieceTypes | null;
   xDimension: number;
   yDimension: number;
-  tileSize: number = INITIAL_TILE_SIZE;       // in pixels
+  tileSize: number;
   subs: Subscription[] = [];
 
   constructor(
@@ -36,16 +31,23 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log(this.tileTypes);
+    this.subs.push(
+      this.store.select(getTileSize).subscribe((tileSize: number) => {
+        this.tileSize = tileSize;
+      })
+    );
     this.subs.push(
       this.store.select(getSelectedPaletteTileType).subscribe((tileType: TileTypes|null) => {
         this.selectedPaletteTileType = tileType;
       })
     );
-
+    this.subs.push(
+      this.store.select(getSelectedPaletteBoardPieceType).subscribe((boardPieceType: BoardPieceTypes|null) => {
+        this.selectedPaletteBoardPieceType = boardPieceType;
+      })
+    );
     this.subs.push(
       this.store.select(getBoardSize).subscribe((boardSize) => {
-        console.log(boardSize);
         this.xDimension = boardSize.x;
         this.yDimension = boardSize.y;
         this.cdRef.detectChanges();
@@ -68,38 +70,22 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   }
 
   onTileSizeChange(event: any): void {
-    this.tileSize = event;
-  }
-
-  onTileClick(_event: any, x: number, y: number): void {
-    if (this.selectedPaletteTileType) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
-    } else {
-      console.log('tile ' + x + '-' + y +' clicked without palette tile set')
-    }
-  }
-
-  onTileMouseover(event: any, x: number, y: number): void {
-    if (this.selectedPaletteTileType && event.buttons === 1) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
-    } else if (event.buttons === 2) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: TileTypes.Ground }));
-    }
-  }
-
-  onTileMouseup(_event: any): void {
-    this.clearSelection();
+    this.store.dispatch(setTileSize({ tileSize: event }));
   }
 
   onPaletteTileClick(_event: any, tileType: TileTypes): void {
     this.store.dispatch(setSelectedPaletteTileType({ tileType }));
+    this.store.dispatch(setSelectedPaletteBoardPieceType({ boardPieceType: null }));
+  }
+  
+  onPaletteBoardPieceClick(_event: any, boardPieceType: BoardPieceTypes): void {
+    this.store.dispatch(setSelectedPaletteBoardPieceType({ boardPieceType }));
+    this.store.dispatch(setSelectedPaletteTileType({ tileType: null }));
   }
 
   onMapEditorToggle(event: any): void {
     this.showMapEditor = event.checked;
-    if (this.selectedPaletteTileType) {
-      this.store.dispatch(setSelectedPaletteTileType({ tileType: this.selectedPaletteTileType }));
-    }
+    this.store.dispatch(setSelectedPaletteTileType({ tileType: null }));
   }
 
   onExportClick(): void {
@@ -127,15 +113,6 @@ export class CsgoBoardGameComponent implements OnInit, OnDestroy {
 
   onResetClick(): void {
     this.store.dispatch(setCsgoBoardGameMap({ tiles: initialState.tiles, boardSize: initialState.boardSize }));
-  }
-
-  clearSelection(): void {
-    if(window.getSelection) {
-      var sel = window.getSelection();
-      if (sel) {
-        sel.removeAllRanges();
-      }
-    }
   }
 
   @HostListener('contextmenu', ['$event'])

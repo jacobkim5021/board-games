@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { TileInfo, TileTypes } from './csgo-board-game.reducer';
+import { BoardPieceTypes, TileInfo, TileTypes } from './csgo-board-game.reducer';
 
 export const loadCsgoBoardGames = createAction(
   '[CsgoBoardGame] Load CsgoBoardGames'
@@ -25,12 +25,27 @@ export const setCsgoBoardSize = createAction(
   props<{ boardSize: { x: number, y: number } }>()
 );
 
+export const setTileSize = createAction(
+  '[CsgoBoardGame] Set Tile Size',
+  props<{ tileSize: number }>()
+);
+
 export const setSelectedPaletteTileType = createAction(
   '[CsgoBoardGame] Set Selected Palette Tile Type',
-  props<{ tileType: TileTypes }>()
+  props<{ tileType: TileTypes | null }>()
+);
+
+export const setSelectedPaletteBoardPieceType = createAction(
+  '[CsgoBoardGame] Set Selected Palette Board Piece Type',
+  props<{ boardPieceType: BoardPieceTypes | null }>()
 );
 
 export const setTileType = createAction(
   '[CsgoBoardGame] Set Tile Type',
   props<{ tileId: string, tileType: TileTypes }>()
+);
+
+export const patchBoardPieceData = createAction(
+  '[CsgoBoardGame] Set Board Piece Data',
+  props<{ boardPieceId: string, data: any }>()
 );

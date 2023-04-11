@@ -34,6 +34,12 @@
       justify-content: space-between;
     }
 
+    &.board-piece-palette {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
     &.map-editor-toggle-row {
       display: flex;
       flex-direction: row;
@@ -41,19 +47,12 @@
   }
 }
 
-.tile-container {
-  display: inline-block;
-  border: 2px solid $mirage-background-color;
-
-  .tile-row {
-    display: flex;
-  }
+.palette-tile-row {
+  display: flex;
 }
 
-.tile-palette {
-  .palette-tile-row {
-    display: flex;
-  }
+.palette-board-piece-row {
+  display: flex;
 }
 
 .map-functions {
@@ -89,8 +88,5 @@
 
 .map-editor-toggle {
   display: flex;
-  padding-right: 10px;
-  margin-top: auto;
-  margin-bottom: 5px;
   justify-content: space-between;
 }

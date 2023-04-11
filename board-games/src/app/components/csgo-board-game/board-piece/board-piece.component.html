@@ -1,5 +1,8 @@
-<svg-icon
-  src="/assets/icons/awp.svg"
-  [svgStyle]="svgStyle"
->
-</svg-icon>
+<div class="board-piece-wrapper">
+  <svg-icon
+    *ngIf="type"
+    [src]="'/assets/icons/' + type + '.svg'"
+    [svgStyle]="svgStyle"
+  >
+  </svg-icon>
+</div>

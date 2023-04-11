@@ -1,7 +1,13 @@
 <div class="app-container">
   <div class="column">
     <div class="row">
-  
+      
+    </div>
+    <div class="row">
+
+    </div>
+    <div class="row">
+      
     </div>
     
   </div>
@@ -10,36 +16,36 @@
       <!-- <h2 [ngStyle]="{'position': 'absolute', 'bottom': 0}">5 / 5 Points</h2> -->
     </div>
     <div class="row game-board">
-      <div class="tile-container">
-        <div
-          *ngFor="let rowIndex of [].constructor(yDimension); let y = index"
-          class="tile-row"
-        >
-          <app-tile
-            *ngFor="let colIndex of [].constructor(xDimension); let x = index"
-            [coordinates]="{ x, y }"
-            [tileSize]="{ x: tileSize + 'px', y: tileSize + 'px'}"
-            (click)="onTileClick($event, x, y)"
-            (mousedown)="onTileMouseover($event, x, y)"
-            (mouseover)="onTileMouseover($event, x, y)"
-            (mouseup)="onTileMouseup($event)"
-          ></app-tile>
-        </div>
-      </div>
-      <!-- <app-board
-        [xDimension]="xDimension"
-        [yDimension]="yDimension"
-      ></app-board> -->
-      <app-board-piece
-        [size]="tileSize"
-      ></app-board-piece>
+      <app-board
+      ></app-board>
     </div>
     <div class="row">
       <!-- <h2 [ngStyle]="{'text-align': 'right'}">5 / 5 Points</h2> -->
     </div>
   </div>
   <div class="column">
-    <div class="row map-editor-toggle-row">
+    <div class="row board-piece-palette">
+      <div>
+        
+      </div>
+      <div>
+        <div [ngStyle]="{'margin-bottom':'5px'}">
+          <!-- Some text -->
+        </div>
+        <div
+          *ngFor="let boardPieceType of boardPieceTypes; let i = index"
+          class="palette-board-piece-row"
+        >
+          <app-tile
+            [boardPieceType]="boardPieceType"
+            [selected]="selectedPaletteBoardPieceType === boardPieceType"
+            (click)="onPaletteBoardPieceClick($event, boardPieceType)"
+          ></app-tile>
+          <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">{{ boardPieceType | titlecase }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="row palette">
       <div class="map-editor-toggle">
         <div style="margin-right: 10px">
           Show Map Editor Tools
@@ -49,9 +55,7 @@
           [checked]="showMapEditor"
         ></mat-slide-toggle>
       </div>
-    </div>
-    <div class="row palette">
-      <div *ngIf="showMapEditor" class="tile-palette">
+      <div *ngIf="showMapEditor" class="">
         <div 
           *ngFor="let tileType of tileTypes; let z = index"
           class="palette-tile-row"
