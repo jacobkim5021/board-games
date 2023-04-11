@@ -16,11 +16,25 @@ export interface State {
   palette: {
     selected: TileTypes|null;
   }
+  boardPieces: {
+    [id: string]: BoardPiece
+  };
 }
+
+export interface BoardPiece {
+  type: BoardPieceTypes;
+  position: string;   // tile id,
+};
 
 export interface TileInfo {
   type: TileTypes;
   style: TileStyles;
+};
+
+export enum BoardPieceTypes {
+  Pistol = 'pistol',
+  Rifle = 'rifle',
+  Sniper = 'sniper',
 };
 
 export enum TileTypes {
@@ -55,7 +69,8 @@ export const initialState: State = {
   boardSize: INITIAL_BOARD_SIZE,
   palette: {
     selected: null
-  }
+  },
+  boardPieces: {}
 };
 
 export const reducer = createReducer(

@@ -5,6 +5,12 @@ import { setCsgoBoardGameMap, setCsgoBoardSize, setSelectedPaletteTileType, setT
 import { INITIAL_TILE_SIZE, TileTypes, initialState } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
 import { getBoardSize, getSelectedPaletteTileType, selectCsgoBoardGameState } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
 import exportFromJSON from 'export-from-json';
+import {
+  CdkDrag,
+  CdkDragStart,
+  CdkDropList, CdkDropListGroup, CdkDragMove, CdkDragEnter,
+  moveItemInArray
+} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-csgo-board-game',
@@ -13,6 +19,7 @@ import exportFromJSON from 'export-from-json';
 })
 export class CsgoBoardGameComponent implements OnInit, OnDestroy {
   @ViewChild('importFileUpload') importFileUploadInput: ElementRef;
+  @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
   showMapEditor: boolean = true;
   tileTypes: TileTypes[] = Object.values(TileTypes);
   selectedPaletteTileType: TileTypes | null;

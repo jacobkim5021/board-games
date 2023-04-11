@@ -11,7 +11,7 @@
     </div>
     <div class="row game-board">
       <div class="tile-container">
-        <div 
+        <div
           *ngFor="let rowIndex of [].constructor(yDimension); let y = index"
           class="tile-row"
         >
@@ -26,6 +26,13 @@
           ></app-tile>
         </div>
       </div>
+      <!-- <app-board
+        [xDimension]="xDimension"
+        [yDimension]="yDimension"
+      ></app-board> -->
+      <app-board-piece
+        [size]="tileSize"
+      ></app-board-piece>
     </div>
     <div class="row">
       <!-- <h2 [ngStyle]="{'text-align': 'right'}">5 / 5 Points</h2> -->
@@ -60,14 +67,13 @@
       <div *ngIf="showMapEditor" class="">
         <div class="dimension-settings">
           <div>x: </div>
-          <input type="number" class="dimension-input" [ngModel]="xDimension" (ngModelChange)="onDimensionChange($event, 'x')">
+          <input type="number" class="dimension-input" max="100" [ngModel]="xDimension" (ngModelChange)="onDimensionChange($event, 'x')">
           <div>y: </div>
-          <input type="number" class="dimension-input" [ngModel]="yDimension" (ngModelChange)="onDimensionChange($event, 'y')">
+          <input type="number" class="dimension-input" max="100" [ngModel]="yDimension" (ngModelChange)="onDimensionChange($event, 'y')">
           <div>tile size: </div>
-          <input type="number" class="dimension-input" [ngModel]="tileSize" (ngModelChange)="onTileSizeChange($event)">
+          <input type="number" class="dimension-input" max="100" [ngModel]="tileSize" (ngModelChange)="onTileSizeChange($event)">
           <div>px</div>
         </div>
-        <p style="color: red; margin: 5px">* Changing dimensions may result in data loss</p>
       </div>
       <div *ngIf="showMapEditor" class="map-functions">
         <div class="export-map-button" (click)="onExportClick()">

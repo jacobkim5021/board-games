@@ -15,12 +15,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { BoardPieceComponent } from './components/csgo-board-game/board-piece/board-piece.component';
+import { BoardComponent } from './components/csgo-board-game/board/board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CsgoBoardGameComponent,
     TileComponent,
+    BoardPieceComponent,
+    BoardComponent,
   ],
   imports: [
     BrowserModule,
