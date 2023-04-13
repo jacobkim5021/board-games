@@ -1,0 +1,12 @@
+<div class="map-functions">
+  <div class="map-function-button" (click)="onExportClick()">
+    Export Map
+  </div>
+  <input type="file" [ngStyle]="{ display: 'none' }" (change)="onImportClick($event)" #importFileUpload>
+  <div class="map-function-button" (click)="importFileUpload.click()">
+    Import Map
+  </div>
+  <div class="map-function-button" (click)="onResetClick()">
+    Reset Map
+  </div>
+</div>

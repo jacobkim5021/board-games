@@ -1,0 +1,9 @@
+<div class="dimension-settings-container">
+  <div>x: </div>
+  <input type="number" class="dimension-input" max="100" [ngModel]="xDimension" (ngModelChange)="onDimensionChange($event, 'x')">
+  <div>y: </div>
+  <input type="number" class="dimension-input" max="100" [ngModel]="yDimension" (ngModelChange)="onDimensionChange($event, 'y')">
+  <div>tile size: </div>
+  <input type="number" class="dimension-input" max="100" [ngModel]="tileSize" (ngModelChange)="onTileSizeChange($event)">
+  <div>px</div>
+</div>

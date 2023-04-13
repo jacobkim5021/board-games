@@ -5,7 +5,7 @@
   width: 100%;
   color: white;
 
-  .app-container {
+  .game-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -34,6 +34,11 @@
       justify-content: space-between;
     }
 
+    &.turn-functions-container {
+      display: flex;
+      flex-direction: column;
+    }
+
     &.board-piece-palette {
       display: flex;
       flex-direction: column;
@@ -47,46 +52,7 @@
   }
 }
 
-.palette-tile-row {
-  display: flex;
-}
-
-.palette-board-piece-row {
-  display: flex;
-}
-
-.map-functions {
-  display: flex;
-}
-
-.dimension-settings {
-  display: flex;
-
-  .dimension-input {
-    width: 40px;
-    margin-right: 15px;
-    margin-left: 5px;
-  }
-}
-
-.export-map-button, .import-map-button, .reset-map-button {
-  color: black;
-  background-color: white;
-  width: 100%;
-  height: 40px;
-  margin: 5px 5px 5px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-}
-
-.map-editor-toggle {
-  display: flex;
-  justify-content: space-between;
+.turn-functions {
+  flex-grow: 1;
+  flex-basis: 0;
 }

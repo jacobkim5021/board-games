@@ -1,0 +1,16 @@
+<div>
+  <div [ngStyle]="{'margin-bottom':'5px'}">
+    <!-- Some text -->
+  </div>
+  <div
+    *ngFor="let boardPieceType of boardPieceTypes; let i = index"
+    class="palette-board-piece-row"
+  >
+    <app-tile
+      [boardPieceType]="boardPieceType"
+      [selected]="palette.selectedBoardPieceType === boardPieceType"
+      (click)="onPaletteBoardPieceClick($event, boardPieceType)"
+    ></app-tile>
+    <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">{{ boardPieceType | titlecase }}</p>
+  </div>
+</div>

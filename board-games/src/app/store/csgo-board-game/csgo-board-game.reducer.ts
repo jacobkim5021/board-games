@@ -7,6 +7,7 @@ export const INITIAL_TILE_SIZE = 30;
 
 export interface State {
   username: string;
+  mapEditorMode: boolean;
   boardSize: {
     x: number,
     y: number,
@@ -15,13 +16,16 @@ export interface State {
   tiles: {
     [id: string]: TileInfo;
   }
-  palette: {
-    selectedBoardPieceType: BoardPieceTypes|null;
-    selectedTileType: TileTypes|null;
-  };
+  palette: Palette;
   boardPieces: {
     [id: string]: BoardPiece
   };
+}
+
+export interface Palette {
+  selectedBoardPieceType: BoardPieceTypes|null;
+  selectedTileType: TileTypes|null;
+  isSpawnSelected: boolean;
 }
 
 export interface BoardPiece {
@@ -31,7 +35,7 @@ export interface BoardPiece {
 
 export interface TileInfo {
   type: TileTypes;
-  style: TileStyles;
+  isSpawn: boolean;
 };
 
 export enum BoardPieceTypes {
@@ -47,20 +51,13 @@ export enum TileTypes {
   Box = 'box',
 };
 
-export interface TileStyles {
-  // class: TileTypes;
-  background: any;
-}
-
 const getInitialTiles = (xLength: number, yLength: number) => {
   const initialTiles: { [coordinate: string]: TileInfo } = {};
   Array.from(Array(xLength)).forEach((_x, x) => {
     Array.from(Array(yLength)).forEach((_y, y) => {
       initialTiles[x + '-' + y] = {
         type: TileTypes.Ground,
-        style: {
-          // class: TileTypes.Wall
-        },
+        isSpawn: false,
       } as TileInfo;
     });
   });
@@ -68,13 +65,15 @@ const getInitialTiles = (xLength: number, yLength: number) => {
 };
 
 export const initialState: State = {
-  username: 'tempUserId',
+  username: '',
+  mapEditorMode: false,
   tiles: getInitialTiles(INITIAL_BOARD_SIZE.x, INITIAL_BOARD_SIZE.y),
   boardSize: INITIAL_BOARD_SIZE,
   tileSize: INITIAL_TILE_SIZE,
   palette: {
     selectedTileType: null,
-    selectedBoardPieceType: null
+    selectedBoardPieceType: null,
+    isSpawnSelected: false,
   },
   boardPieces: {}
 };
@@ -85,11 +84,26 @@ export const reducer = createReducer(
   on(CsgoBoardGameActions.loadCsgoBoardGamesSuccess, (state, action) => state),
   on(CsgoBoardGameActions.loadCsgoBoardGamesFailure, (state, action) => state),
 
+  on(CsgoBoardGameActions.setMapEditorMode, (state, action) => {
+    return {
+      ...state,
+      mapEditorMode: action.mapEditorMode
+    };
+  }),
+
   on(CsgoBoardGameActions.setCsgoBoardGameMap, (state, action) => {
     return {
       ...state,
-      boardSize: action.boardSize,
-      tiles: action.tiles 
+      boardSize: action.boardSize ?? state.boardSize,
+      tiles: action.tiles ?? state.tiles,
+      tileSize: action.tileSize ?? state.tileSize,
+    };
+  }),
+
+  on(CsgoBoardGameActions.enterLobby, (state, action) => {
+    return {
+      ...state,
+      username: action.username,
     };
   }),
 
@@ -122,6 +136,17 @@ export const reducer = createReducer(
       boardSize: action.boardSize,
       tiles: freshTiles,
       boardPieces: filteredPieces,
+    };
+  }),
+
+  on(CsgoBoardGameActions.setPalette, (state, action) => {
+    return {
+      ...state,
+      palette: {
+        selectedTileType: action.selectedTileType,
+        selectedBoardPieceType: action.selectedBoardPieceType,
+        isSpawnSelected: action.isSpawnSelected,
+      },
     };
   }),
 
@@ -158,6 +183,23 @@ export const reducer = createReducer(
         }
       }
     };
+  }),
+
+  on(CsgoBoardGameActions.patchTileData, (state, action) => {
+    if (action.tileId) {
+      return {
+        ...state,
+        tiles: {
+          ...state.tiles,
+          [action.tileId]: {
+            ...state.tiles[action.tileId] ?? {},
+            ...action.data,
+          }
+        }
+      };
+    } else {
+      return state;
+    }
   }),
 
   on(CsgoBoardGameActions.patchBoardPieceData, (state, action) => {

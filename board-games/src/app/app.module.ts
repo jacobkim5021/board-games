@@ -1,5 +1,5 @@
 import { NgModule, isDevMode } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -14,9 +14,18 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BoardPieceComponent } from './components/csgo-board-game/board-piece/board-piece.component';
 import { BoardComponent } from './components/csgo-board-game/board/board.component';
+import { BoardPiecePaletteComponent } from './components/csgo-board-game/board-piece-palette/board-piece-palette.component';
+import { TilePaletteComponent } from './components/csgo-board-game/tile-palette/tile-palette.component';
+import { MapFunctionsComponent } from './components/csgo-board-game/map-functions/map-functions.component';
+import { MapDimensionSettingsComponent } from './components/csgo-board-game/map-dimension-settings/map-dimension-settings.component';
+import { LandingDialogComponent } from './components/csgo-board-game/dialogs/landing-dialog/landing-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +34,11 @@ import { BoardComponent } from './components/csgo-board-game/board/board.compone
     TileComponent,
     BoardPieceComponent,
     BoardComponent,
+    BoardPiecePaletteComponent,
+    TilePaletteComponent,
+    MapFunctionsComponent,
+    MapDimensionSettingsComponent,
+    LandingDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,8 +49,13 @@ import { BoardComponent } from './components/csgo-board-game/board/board.compone
     HttpClientModule,
     BrowserAnimationsModule,
     MatSlideToggleModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
     DragDropModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

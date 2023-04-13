@@ -3,11 +3,7 @@
   class="tile"
   [ngClass]="[type]"
   [class.tile-selected]="selected"
-  [ngStyle]="{
-    width: tileSize + 'px',
-    height: tileSize + 'px',
-    position: 'relative'
-  }"
+  [ngStyle]="tileStyle"
 >
   <!-- <p *ngIf="coordinates">{{coordinates.x }}{{ coordinates.y}}</p> -->
   <svg-icon

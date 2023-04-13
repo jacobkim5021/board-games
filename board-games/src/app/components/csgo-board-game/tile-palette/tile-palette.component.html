@@ -1,0 +1,22 @@
+<div class="tile-palette-container">
+  <div 
+    *ngFor="let tileType of tileTypes; let z = index"
+    class="palette-tile-row"
+  >
+    <app-tile
+      [tileType]="tileType"
+      [selected]="palette.selectedTileType === tileType"
+      (click)="onPaletteTileClick($event, tileType, false)"
+    ></app-tile>
+    <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">{{ tileType | titlecase }}</p>
+  </div>
+  <div class="palette-buy-zone-row">
+    <app-tile
+      [tileType]="tileTypesInterface.Ground"
+      [selected]="palette.isSpawnSelected"
+      [forceSpawn]="true"
+      (click)="onPaletteTileClick($event, null, !palette.isSpawnSelected)"
+    ></app-tile>
+    <p [ngStyle]="{ margin: '0 0 0 5px', 'display': 'flex', 'align-items': 'center' }">Spawn Zone</p>
+  </div>
+</div>

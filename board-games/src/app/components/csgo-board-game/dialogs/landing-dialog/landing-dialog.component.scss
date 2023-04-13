@@ -1,0 +1,9 @@
+.username-field {
+  width: 100%;
+}
+
+:host ::ng-deep {
+  .mat-mdc-dialog-content {
+    padding-bottom: 0;
+  }
+}

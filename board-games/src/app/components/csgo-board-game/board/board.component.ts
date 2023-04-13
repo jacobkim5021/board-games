@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, ViewChildren, QueryList, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/store/reducers';
 import { Subscription } from 'rxjs';
-import { getBoardPieceMap, getBoardSize, getSelectedPaletteBoardPieceType, getSelectedPaletteTileType, getTileSize, getUsername } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
-import { BoardPiece, BoardPieceTypes, TileTypes } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
-import { patchBoardPieceData, setSelectedPaletteBoardPieceType, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
+import { getBoardPieceMap, getBoardSize, getPalette, getTileSize, getUsername } from 'src/app/store/csgo-board-game/csgo-board-game.selectors';
+import { Palette, TileTypes } from 'src/app/store/csgo-board-game/csgo-board-game.reducer';
+import { patchBoardPieceData, patchTileData, setSelectedPaletteBoardPieceType, setTileType } from 'src/app/store/csgo-board-game/csgo-board-game.actions';
 
 @Component({
   selector: 'app-board',
@@ -20,8 +20,7 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
   xArray: any[];
   yArray: any[];
   tileSize: number;
-  selectedPaletteTileType: TileTypes | null;
-  selectedPaletteBoardPieceType: BoardPieceTypes | null;
+  palette: Palette;
   boardStyle: any = {
     'display': 'grid',
     'justify-items': 'center',
@@ -67,6 +66,7 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subs.push(
       this.store.select(getBoardPieceMap).subscribe(boardPieceMap => {
         this.boardPieceList = Object.keys(boardPieceMap).map(boardPieceId => {
+          if (!boardPieceMap[boardPieceId].position) console.log(boardPieceId)
           const [xOffset, yOffset] = this.getOffsetFromTileId(boardPieceMap[boardPieceId].position);
           return {
             ...boardPieceMap[boardPieceId],
@@ -78,13 +78,8 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
     this.subs.push(
-      this.store.select(getSelectedPaletteTileType).subscribe((tileType: TileTypes|null) => {
-        this.selectedPaletteTileType = tileType;
-      })
-    );
-    this.subs.push(
-      this.store.select(getSelectedPaletteBoardPieceType).subscribe((boardPieceType: BoardPieceTypes|null) => {
-        this.selectedPaletteBoardPieceType = boardPieceType;
+      this.store.select(getPalette).subscribe((palette: Palette) => {
+        this.palette = JSON.parse(JSON.stringify(palette));
       })
     );
     this.subs.push(
@@ -102,27 +97,40 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   onTileClick(_event: any, x: number, y: number): void {
-    if (this.selectedPaletteTileType) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
-    } else if (this.selectedPaletteBoardPieceType) {
+    if (this.palette.selectedTileType) {
+      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.palette.selectedTileType }));
+    } else if (this.palette.selectedBoardPieceType) {
       this.store.dispatch(patchBoardPieceData({
-        boardPieceId: 'tempUserId',
+        boardPieceId: this.username,
         data: {
-          type: this.selectedPaletteBoardPieceType,
+          type: this.palette.selectedBoardPieceType,
           position: x + '-' + y,
         }
       }));
       this.store.dispatch(setSelectedPaletteBoardPieceType({ boardPieceType: null }));
+    } else if (this.palette.isSpawnSelected) {
+      this.store.dispatch(patchTileData({
+        tileId: x + '-' + y,
+        data: {
+          isSpawn: true
+        }
+      }));
     } else {
       console.log('tile ' + x + '-' + y +' clicked without palette tile set')
     }
   }
 
   onTileMouseover(event: any, x: number, y: number): void {
-    if (this.selectedPaletteTileType && event.buttons === 1) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
+    if (this.palette.selectedTileType && event.buttons === 1) {
+      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.palette.selectedTileType }));
     } else if (event.buttons === 2) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: TileTypes.Ground }));
+      this.store.dispatch(patchTileData({
+        tileId: x + '-' + y,
+        data: {
+          type: TileTypes.Ground,
+          isSpawn: false,
+        }
+      }));
     }
   }
 
@@ -133,15 +141,22 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
   onBoardPieceClick(event: any, boardPiece: any): void {
     console.log('click board piece', event)
     const [x, y] = boardPiece.position.split('-');
-    if (this.selectedPaletteTileType) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
+    if (this.palette.selectedTileType) {
+      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.palette.selectedTileType }));
+    } else if (this.palette.isSpawnSelected) {
+      this.store.dispatch(patchTileData({
+        tileId: x + '-' + y,
+        data: {
+          isSpawn: this.palette.isSpawnSelected,
+        }
+      }));
     }
   }
 
   onBoardPieceMouseover(event: any, boardPiece: any): void {
     const [x, y] = boardPiece.position.split('-');
-    if (this.selectedPaletteTileType && event.buttons === 1) {
-      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.selectedPaletteTileType }));
+    if (this.palette.selectedTileType && event.buttons === 1) {
+      this.store.dispatch(setTileType({ tileId: x + '-' + y, tileType: this.palette.selectedTileType }));
     } else if (event.buttons === 2) {
       this.store.dispatch(patchBoardPieceData({
         boardPieceId: boardPiece.id,

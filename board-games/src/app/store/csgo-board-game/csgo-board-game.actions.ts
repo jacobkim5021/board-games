@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { BoardPieceTypes, TileInfo, TileTypes } from './csgo-board-game.reducer';
+import { BoardPieceTypes, Palette, TileTypes } from './csgo-board-game.reducer';
 
 export const loadCsgoBoardGames = createAction(
   '[CsgoBoardGame] Load CsgoBoardGames'
@@ -15,9 +15,19 @@ export const loadCsgoBoardGamesFailure = createAction(
   props<{ error: any }>()
 );
 
+export const setMapEditorMode = createAction(
+  '[CsgoBoardGame] Set Map Editor Mode',
+  props<{ mapEditorMode: boolean }>()
+);
+
 export const setCsgoBoardGameMap = createAction(
   '[CsgoBoardGame] Set Csgo Board Game Map',
-  props<{ tiles: { [id: string]: TileInfo }, boardSize: { x: number, y: number } }>()
+  props<any>()
+);
+
+export const enterLobby = createAction(
+  '[CsgoBoardGame] Enter Lobby',
+  props<{ username: string }>()
 );
 
 export const setCsgoBoardSize = createAction(
@@ -28,6 +38,11 @@ export const setCsgoBoardSize = createAction(
 export const setTileSize = createAction(
   '[CsgoBoardGame] Set Tile Size',
   props<{ tileSize: number }>()
+);
+
+export const setPalette = createAction(
+  '[CsgoBoardGame] Set Palette',
+  props<Palette>()
 );
 
 export const setSelectedPaletteTileType = createAction(
@@ -45,7 +60,12 @@ export const setTileType = createAction(
   props<{ tileId: string, tileType: TileTypes }>()
 );
 
+export const patchTileData = createAction(
+  '[CsgoBoardGame] Patch Tile Data',
+  props<{ tileId: string, data: any }>()
+);
+
 export const patchBoardPieceData = createAction(
-  '[CsgoBoardGame] Set Board Piece Data',
+  '[CsgoBoardGame] Patch Board Piece Data',
   props<{ boardPieceId: string, data: any }>()
 );

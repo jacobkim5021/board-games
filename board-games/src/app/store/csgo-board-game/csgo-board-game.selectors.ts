@@ -5,10 +5,30 @@ export const selectCsgoBoardGameState = createFeatureSelector<fromCsgoBoardGame.
   fromCsgoBoardGame.csgoBoardGameFeatureKey
 );
 
+export const getStateForExport = createSelector(
+  selectCsgoBoardGameState,
+  (csgoBoardGameState: fromCsgoBoardGame.State) => {
+    const {
+      username: _1,
+      palette: _2,
+      boardPieces: _3,
+      ...rest
+    } = csgoBoardGameState;
+    return rest;
+  }
+);
+
 export const getUsername = createSelector(
   selectCsgoBoardGameState,
   (csgoBoardGameState: fromCsgoBoardGame.State) => {
     return csgoBoardGameState.username;
+  }
+);
+
+export const getMapEditorMode = createSelector(
+  selectCsgoBoardGameState,
+  (csgoBoardGameState: fromCsgoBoardGame.State) => {
+    return csgoBoardGameState.mapEditorMode;
   }
 );
 
@@ -47,6 +67,13 @@ export const getBoardPieceMap = createSelector(
   selectCsgoBoardGameState,
   (csgoBoardGameState: fromCsgoBoardGame.State) => {
     return csgoBoardGameState.boardPieces;
+  }
+);
+
+export const getPalette = createSelector(
+  selectCsgoBoardGameState,
+  (csgoBoardGameState: fromCsgoBoardGame.State) => {
+    return csgoBoardGameState.palette;
   }
 );
 
